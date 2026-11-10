@@ -18,13 +18,24 @@ export interface NavigationState {
   path?: string;
   publicPath?: string;
   threadId?: string;
+  /** Open contract on /contracts/:contractId. */
+  contractId?: string;
+  /** Month the time ruler points to. */
+  month?: string;
+  /** Section number open in the original-text panel. */
+  section?: string;
+  /** Finding highlighted in the original-text panel. */
+  itemId?: string;
 }
 
 export function useNavigationState() {
   useAgentRouteState<NavigationState>({
     browserTabId: TAB_ID,
     requestSource: TAB_ID,
-    getNavigationState: ({ pathname }) => navigationStateForPath(pathname),
+    getNavigationState: ({ pathname, searchParams }) => ({
+      ...navigationStateForPath(pathname),
+      ...contractStateFor(pathname, searchParams),
+    }),
     getCommandPath: commandPathForNavigation,
   });
 }
@@ -72,7 +83,25 @@ export function navigationStateForPath(pathname: string): NavigationState {
   };
 }
 
+function contractStateFor(
+  pathname: string,
+  searchParams?: URLSearchParams,
+): NavigationState {
+  const contractId = pathname.match(/^\/contracts\/([^/]+)/)?.[1];
+  if (!contractId) return {};
+  const month = searchParams?.get("m");
+  const section = searchParams?.get("sec");
+  const itemId = searchParams?.get("item");
+  return {
+    contractId: decodeURIComponent(contractId),
+    ...(month ? { month } : {}),
+    ...(section ? { section } : {}),
+    ...(itemId ? { itemId } : {}),
+  };
+}
+
 function viewForPath(pathname: string): string {
+  if (pathname.startsWith("/contracts")) return "contracts";
   if (isChatPathname(pathname)) return "chat";
   if (pathname === HOME_PATH) return "home";
   if (pathname.startsWith("/database")) return "database";
@@ -93,6 +122,8 @@ function pathForView(view?: string): string {
       return NEW_CHAT_PATH;
     case "home":
       return HOME_PATH;
+    case "contracts":
+      return "/contracts";
     case "database":
       return "/database";
     case "extensions":
@@ -111,6 +142,9 @@ function pathForView(view?: string): string {
 }
 
 export function pathForCommand(command: any): string {
+  if (command?.view === "contracts" && typeof command?.contractId === "string") {
+    return `/contracts/${encodeURIComponent(command.contractId)}`;
+  }
   const path = pathForView(command?.view);
   if (command?.view !== "chat" && command?.view !== "ask") return path;
   const threadId =

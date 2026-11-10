@@ -8,12 +8,15 @@ const agentNativePlugins = agentNative as unknown as (
 ) => any[];
 export default defineConfig({
   optimizeDeps: {
+    // Pre-bundle the file readers so the first dropped contract does not
+    // trigger a dev-server dependency reload.
+    include: ["pdfjs-dist", "mammoth/mammoth.browser"],
     entries: [
       "app/entry.client.tsx",
       "app/root.tsx",
       "app/components/layout/{Layout,Sidebar}.tsx",
       "app/components/chat/ChatRouteContent.tsx",
-      "app/routes/{home,chat.$threadId}.tsx",
+      "app/routes/{home,chat.$threadId,contracts._index,contracts.$contractId}.tsx",
     ],
   },
   plugins: [

@@ -15,6 +15,7 @@ import { openCommandMenu } from "@agent-native/toolkit/app/shared";
 import { AgentNativeIcon } from "@agent-native/toolkit/app/shared/AgentNativeIcon";
 import {
   IconEdit,
+  IconFileText,
   IconHome,
   IconLayoutSidebarLeftCollapse,
   IconLayoutSidebarLeftExpand,
@@ -151,6 +152,39 @@ function HomeNavLink({ collapsed }: { collapsed: boolean }) {
   }
 
   return <div className="px-2">{link}</div>;
+}
+
+function ContractsNavLink({ collapsed }: { collapsed: boolean }) {
+  const location = useLocation();
+  const active = location.pathname.startsWith("/contracts");
+  const link = (
+    <Link
+      to="/contracts"
+      aria-current={active ? "page" : undefined}
+      aria-label={collapsed ? "Contracts" : undefined}
+      className={cn(
+        "flex items-center text-sidebar-accent-foreground transition-colors hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+        active && "bg-sidebar-accent",
+        collapsed
+          ? "size-8 justify-center rounded-md"
+          : "h-8 w-full gap-3 rounded-lg px-3 text-sm font-medium",
+      )}
+    >
+      <IconFileText className="size-4 shrink-0" strokeWidth={1.8} />
+      <span className={collapsed ? "sr-only" : "truncate"}>Contracts</span>
+    </Link>
+  );
+
+  if (collapsed) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>{link}</TooltipTrigger>
+        <TooltipContent side="right">Contracts</TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return <div className="px-2 pb-1">{link}</div>;
 }
 
 function ChatThreadsSection({ collapsed }: { collapsed: boolean }) {
@@ -407,6 +441,7 @@ export function Sidebar({
           collapsed ? "items-center gap-1 px-1 py-2" : "pt-1",
         )}
       >
+        <ContractsNavLink collapsed={collapsed} />
         <HomeNavLink collapsed={collapsed} />
         <ChatThreadsSection collapsed={collapsed} />
       </nav>

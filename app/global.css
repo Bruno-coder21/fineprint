@@ -281,3 +281,67 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.34);
 }
+
+/* Fineprint: risk colors, set by a data-risk attribute on any element. */
+[data-risk="red"] {
+  --risk: 4 74% 50%;
+  --risk-soft: 4 86% 96%;
+}
+[data-risk="yellow"] {
+  --risk: 36 92% 46%;
+  --risk-soft: 42 96% 93%;
+}
+[data-risk="green"] {
+  --risk: 152 52% 36%;
+  --risk-soft: 148 52% 94%;
+}
+[data-risk="none"] {
+  --risk: 0 0% 72%;
+  --risk-soft: 0 0% 95%;
+}
+.dark [data-risk="red"] {
+  --risk-soft: 4 50% 18%;
+}
+.dark [data-risk="yellow"] {
+  --risk-soft: 40 55% 16%;
+}
+.dark [data-risk="green"] {
+  --risk-soft: 150 40% 15%;
+}
+.dark [data-risk="none"] {
+  --risk: 0 0% 42%;
+  --risk-soft: 0 0% 16%;
+}
+
+.fineprint-unread {
+  background-image: repeating-linear-gradient(
+    135deg,
+    hsl(var(--border)) 0 2px,
+    transparent 2px 6px
+  );
+}
+
+.fineprint-contract-text {
+  font-family: ui-serif, Georgia, "Times New Roman", serif;
+  line-height: 1.7;
+}
+
+/* The review deck slides each new point in, so a decision visibly lands. */
+@keyframes fineprint-point-in {
+  from {
+    opacity: 0;
+    transform: translateX(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.fineprint-point {
+  animation: fineprint-point-in 260ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .fineprint-point {
+    animation: none;
+  }
+}

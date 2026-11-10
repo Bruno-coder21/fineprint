@@ -39,12 +39,13 @@ export function AgentInspector({
       browserTabId={TAB_ID}
       openOnChatRunning={chatHomeHandoffActive}
       onFullscreenRequest={openAskAgentFullscreen}
-      emptyStateText={t("chat.inspectEmptyState")}
+      emptyStateText="Ask about this contract"
       agentPageHref="/settings/agent"
       suggestions={[
-        t("chat.inspectSuggestionCapabilities"),
-        t("chat.inspectSuggestionHello"),
-        t("chat.inspectSuggestionAction"),
+        "Map this contract",
+        "What is the worst clause here?",
+        "What if I leave at month 8?",
+        "Propose a fairer exit penalty",
       ]}
     >
       {children}
